@@ -1,19 +1,19 @@
 package com.project.lawrence.insurance_tracker.service;
 
 import com.project.lawrence.insurance_tracker.model.Insurance;
+import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Service
 public class InsuranceService {
     @Autowired
-    Insurance ins;
+    Insurancerepo repo;
 
-
-
-    public String getAllInsurance(){
-        return ins.getInsuranceName();
+    public List<Insurance> getInsuranceName() {
+        return repo.findAll();
     }
 
 }
