@@ -22,6 +22,8 @@ public class Insurance {
     private int insurancePrice;
     @Column
     private int insuranceTerm;
+    @Lob
+    private byte[] insuranceDocument;
 
     public Insurance() {
 
@@ -65,6 +67,14 @@ public class Insurance {
 
     public void setInsuranceTerm(int insuranceTerm) {
         this.insuranceTerm = insuranceTerm;
+    }
+
+    public byte[] getInsuranceDocument() {
+        return insuranceDocument;
+    }
+
+    public void setInsuranceDocument(byte[] insuranceDocument) {
+        this.insuranceDocument = insuranceDocument;
     }
 
     @Override

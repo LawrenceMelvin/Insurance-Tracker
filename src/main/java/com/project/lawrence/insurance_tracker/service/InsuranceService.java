@@ -4,8 +4,9 @@ import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -48,5 +49,19 @@ public class InsuranceService {
             insurance.setInsurancePrice(insurancePrice);
             return repo.save(insurance);
         }).orElse(null);
+    }
+
+    public List<Insurance> searchByName(String name) {
+        return repo.findByInsuranceNameContainingIgnoreCase(name);
+    }
+
+    public List<Insurance> searchByType(String type) {
+        return repo.findByInsuranceTypeIgnoreCase(type);
+    }
+
+    public void uploadInsuranceDocument(int insuranceId, MultipartFile file) throws IOException {
+        Insurance insurance = repo.findById(insuranceId).orElseThrow(() -> new RuntimeException("Not found"));
+        insurance.setInsuranceDocument(file.getBytes());
+        repo.save(insurance);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +20,17 @@ public class InsuranceController {
     @GetMapping("/all")
     public ResponseEntity<List<Insurance>> getInsuranceAllName(){
         return new ResponseEntity<>(service.getInsuranceName(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/name")
+    public ResponseEntity<List<Insurance>> searchByName(@RequestParam String name) {
+        return ResponseEntity.ok(service.searchByName(name));
+    }
+
+    // ✅ Search by Type
+    @GetMapping("/search/type")
+    public ResponseEntity<List<Insurance>> searchByType(@RequestParam String type) {
+        return ResponseEntity.ok(service.searchByType(type));
     }
 
     @GetMapping("/{insuranceId}")
@@ -60,6 +72,16 @@ public class InsuranceController {
         }
         else{
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/upload-db/{id}")
+    public ResponseEntity<String> uploadPdfToDb(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+        try {
+            service.uploadInsuranceDocument(id, file);
+            return ResponseEntity.ok("PDF uploaded to database successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload: " + e.getMessage());
         }
     }
 
