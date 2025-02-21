@@ -25,11 +25,32 @@ public class InsuranceController {
     public ResponseEntity<Insurance> getById(@PathVariable int insuranceId){
         Insurance insurance = service.getInsuranceById(insuranceId);
         if (insurance != null) {
-            return ResponseEntity.ok(insurance);  // ✅ Return 200 OK
+            return ResponseEntity.ok(insurance);  // Return 200 OK
         } else {
-            return ResponseEntity.notFound().build();  // ❌ 404 Not Found
+            return ResponseEntity.notFound().build();  // 404 Not Found
         }
 //        return new ResponseEntity<>(service.getInsuranceById(insuranceId),HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Insurance> addInsurance(@RequestBody Insurance insurance){
+        Insurance savedInsurance = service.addInsurance(insurance);
+        return new ResponseEntity<>(savedInsurance, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{insuranceId}")
+    public ResponseEntity<Insurance> updateInsurance(@PathVariable int insuranceId,@RequestBody Insurance updatedInsurance){
+        Insurance insurance = service.updateInsurance(insuranceId, updatedInsurance);
+        if (insurance != null) {
+            return ResponseEntity.ok(insurance);  // Return updated record
+        } else {
+            return ResponseEntity.notFound().build();  // 404 Not Found if ID doesn't exist
+        }
+    }
+
+    @DeleteMapping("/delete/{insuranceId}")
+    public void deleteInsurance(@PathVariable int insuranceId){
+        service.deleteInsurance(insuranceId);
     }
 
 }
