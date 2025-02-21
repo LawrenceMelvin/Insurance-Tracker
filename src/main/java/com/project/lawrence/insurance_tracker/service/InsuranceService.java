@@ -42,4 +42,11 @@ public class InsuranceService {
             repo.deleteById(insuranceId);
         }
     }
+
+    public Insurance updatePrice(int insuranceId, int insurancePrice){
+        return repo.findById(insuranceId).map(insurance -> {
+            insurance.setInsurancePrice(insurancePrice);
+            return repo.save(insurance);
+        }).orElse(null);
+    }
 }

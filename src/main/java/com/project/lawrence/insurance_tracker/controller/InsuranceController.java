@@ -29,7 +29,6 @@ public class InsuranceController {
         } else {
             return ResponseEntity.notFound().build();  // 404 Not Found
         }
-//        return new ResponseEntity<>(service.getInsuranceById(insuranceId),HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -51,6 +50,17 @@ public class InsuranceController {
     @DeleteMapping("/delete/{insuranceId}")
     public void deleteInsurance(@PathVariable int insuranceId){
         service.deleteInsurance(insuranceId);
+    }
+
+    @PatchMapping("/update/{insuranceId}")
+    public ResponseEntity<Insurance> updateprice(@PathVariable int insuranceId, @PathVariable int insurancePrice){
+        Insurance ins = service.updatePrice(insuranceId, insurancePrice);
+        if (ins != null){
+            return ResponseEntity.ok(ins);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
