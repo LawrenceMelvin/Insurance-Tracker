@@ -22,11 +22,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll() // Allow access to H2 console
-                        .requestMatchers("/","/home","/auth/register").permitAll() // Allow access to registration
+                        .requestMatchers("/h2-console/**","/auth/register","/css/**","/js/**").permitAll() // Allow access to H2 console
+                        .requestMatchers("/","/home").authenticated() // Allow access after login
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/auth/register")) // Disable CSRF for H2
+                .formLogin(login -> login
+                        .loginPage("/login")  // Custom login page
+                        .loginProcessingUrl("/login") // URL to submit the login form
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true") // Redirect to login page with error
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Custom logout URL)
+                        .logoutSuccessUrl("/login?logout") // Redirect to login page after logout
+                        .permitAll()
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) // Disable CSRF for H2
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)); // Allow frames for H2 console
 
         return http.build();

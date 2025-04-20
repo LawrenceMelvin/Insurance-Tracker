@@ -15,6 +15,14 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Boolean login(String username, String password) {
+        User user = userRepository.findByUserName(username);
+        if (user != null && passwordEncoder.matches(password, user.getUserPassword())) {
+            return true; // Return user if credentials are valid
+        }
+        return false; // Invalid credentials
+    }
+
     public User registerUser(User user) {
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword())); // Encrypt password
         user.setRole("ROLE_USER"); // Default role

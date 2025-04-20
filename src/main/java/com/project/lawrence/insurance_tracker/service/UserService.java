@@ -24,4 +24,12 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getUserPassword(), List.of(new SimpleGrantedAuthority("USER")));
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUserName(username);
+    }
+
+    public User getUserByEmail(String useremail) {
+        return userRepository.findByUserEmail(useremail);
+    }
+
 }
