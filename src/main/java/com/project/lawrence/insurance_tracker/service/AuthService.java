@@ -23,9 +23,12 @@ public class AuthService {
         return false; // Invalid credentials
     }
 
-    public User registerUser(User user) {
+    public void registerUser(User user) {
+        user.setUserName(user.getUserName());
+        user.setUserEmail(user.getUserEmail());
+        System.out.println(user.getUserId() + " " + user.getUserName() + " " + user.getUserEmail() + " " + user.getUserPassword());
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword())); // Encrypt password
         user.setRole("ROLE_USER"); // Default role
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

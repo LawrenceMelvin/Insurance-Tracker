@@ -28,7 +28,6 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login")  // Custom login page
-                        .loginProcessingUrl("/login") // URL to submit the login form
                         .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error=true") // Redirect to login page with error
                         .permitAll()
