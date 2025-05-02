@@ -1,22 +1,29 @@
 package com.project.lawrence.insurance_tracker.controller;
 
 import com.project.lawrence.insurance_tracker.model.Insurance;
+import com.project.lawrence.insurance_tracker.model.User;
+import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.service.InsuranceService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
+@Controller
 @CrossOrigin
 @RequestMapping("/insurance")
 public class InsuranceController {
 
     @Autowired
     InsuranceService service;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/all")
     public ResponseEntity<List<Insurance>> getInsuranceAllName(){
@@ -44,10 +51,18 @@ public class InsuranceController {
         }
     }
 
+    @GetMapping("/add")
+    public String ShowaddInsurancePage() {
+        return "addInsurance"; // Load addInsurance.html
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<Insurance> addInsurance(@RequestBody Insurance insurance){
-        Insurance savedInsurance = service.addInsurance(insurance);
-        return new ResponseEntity<>(savedInsurance, HttpStatus.CREATED);
+    public String addInsurance(@ModelAttribute Insurance insurance, HttpSession session){
+        String username = (String) session.getAttribute("user");
+        User user = userRepository.findByUserName(username);
+        insurance.setUser(user);
+        service.addInsurance(insurance);
+        return "redirect:/"; // Redirect to the list of insurances
     }
 
     @PutMapping("/update/{insuranceId}")

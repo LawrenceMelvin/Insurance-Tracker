@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insurance Tracker - Home</title>
+  <style>
+    .add-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .add-button:hover {
+        background-color: #0056b3;
+    }
+    .welcome-text {
+        margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="welcome-text">
+  <h1>Welcome to Insurance Tracker</h1>
+  <p>Welcome, <span th:text="${session.user}">User</span>!</p>
+</div>
+
+<a href="/insurance/add">
+  <button class="add-button">Add Insurance</button>
+</a>
+
+<div>
+  <h2>Your Insurance Policies</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Insurance Name</th>
+        <th>Insurance Type</th>
+        <th>Insurance Price</th>
+        <th>Term (Years)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="insurance : ${insurance}">
+        <td th:text="${insurance.insuranceName}">Insurance Name</td>
+        <td th:text="${insurance.insuranceType}">Insurance Type</td>
+        <td th:text="${insurance.insurancePrice}">Price</td>
+        <td th:text="${insurance.insuranceTerm}">Years</td>
+        <td>
+          <a th:href="@{/insurance/edit(id=${insurance.insuranceId})}">Edit</a> |
+          <a th:href="@{/insurance/delete(id=${insurance.insuranceId})}">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div>
+  <a th:href="@{/logout}">Logout</a>
+</div>
+</body>
+</html>

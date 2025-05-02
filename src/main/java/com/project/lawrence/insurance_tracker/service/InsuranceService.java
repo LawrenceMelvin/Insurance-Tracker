@@ -1,6 +1,7 @@
 package com.project.lawrence.insurance_tracker.service;
 
 import com.project.lawrence.insurance_tracker.model.Insurance;
+import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class InsuranceService {
     public List<Insurance> getInsuranceName() {
         System.out.println(repo.findAll());
         return repo.findAll();
+    }
+
+    public List<Insurance> getInsuranceByUser(User user) {
+        return repo.findByUser(user);
     }
 
     public Insurance getInsuranceById(int id) {

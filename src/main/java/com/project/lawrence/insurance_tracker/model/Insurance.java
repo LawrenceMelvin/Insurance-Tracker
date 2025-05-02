@@ -25,8 +25,20 @@ public class Insurance {
     @Lob
     private byte[] insuranceDocument;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
     public Insurance() {
 
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getInsuranceId() {
