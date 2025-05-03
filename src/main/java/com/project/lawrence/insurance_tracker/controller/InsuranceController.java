@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,10 +26,10 @@ public class InsuranceController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Insurance>> getInsuranceAllName(){
-        return new ResponseEntity<>(service.getInsuranceName(), HttpStatus.OK);
-    }
+//    @GetMapping("/all")
+//    public ResponseEntity<List<Insurance>> getInsuranceAllName(){
+//        return new ResponseEntity<>(service.getInsuranceName(), HttpStatus.OK);
+//    }
 
     @GetMapping("/search/name")
     public ResponseEntity<List<Insurance>> searchByName(@RequestParam String name) {
@@ -57,8 +58,8 @@ public class InsuranceController {
     }
 
     @PostMapping("/add")
-    public String addInsurance(@ModelAttribute Insurance insurance, HttpSession session){
-        String username = (String) session.getAttribute("user");
+    public String addInsurance(@ModelAttribute Insurance insurance, Authentication authentication){
+        String username = authentication.getName();
         User user = userRepository.findByUserName(username);
         insurance.setUser(user);
         service.addInsurance(insurance);

@@ -16,10 +16,10 @@ public class InsuranceService {
     @Autowired
     Insurancerepo repo;
 
-    public List<Insurance> getInsuranceName() {
-        System.out.println(repo.findAll());
-        return repo.findAll();
-    }
+//    public List<Insurance> getInsuranceName() {
+//        System.out.println(repo.findAll());
+//        return repo.findAll();
+//    }
 
     public List<Insurance> getInsuranceByUser(User user) {
         return repo.findByUser(user);
