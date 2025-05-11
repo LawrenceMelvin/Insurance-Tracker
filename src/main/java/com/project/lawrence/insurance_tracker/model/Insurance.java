@@ -14,16 +14,16 @@ public class Insurance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int insuranceId;
-    @Column
+    @Column(nullable = false)
     private String insuranceName;
-    @Column
+    @Column(nullable = false)
     private String insuranceType;
-    @Column
+    @Column(nullable = false)
     private int insurancePrice;
-    @Column
+    @Column(nullable = false)
     private int insuranceTerm;
-    @Lob
-    private byte[] insuranceDocument;
+//    @Lob
+//    private byte[] insuranceDocument;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
@@ -81,13 +81,13 @@ public class Insurance {
         this.insuranceTerm = insuranceTerm;
     }
 
-    public byte[] getInsuranceDocument() {
-        return insuranceDocument;
-    }
-
-    public void setInsuranceDocument(byte[] insuranceDocument) {
-        this.insuranceDocument = insuranceDocument;
-    }
+//    public byte[] getInsuranceDocument() {
+//        return insuranceDocument;
+//    }
+//
+//    public void setInsuranceDocument(byte[] insuranceDocument) {
+//        this.insuranceDocument = insuranceDocument;
+//    }
 
     @Override
     public String toString() {

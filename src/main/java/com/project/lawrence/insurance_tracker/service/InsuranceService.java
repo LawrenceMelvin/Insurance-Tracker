@@ -6,7 +6,6 @@ import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -15,11 +14,6 @@ public class InsuranceService {
 
     @Autowired
     Insurancerepo repo;
-
-//    public List<Insurance> getInsuranceName() {
-//        System.out.println(repo.findAll());
-//        return repo.findAll();
-//    }
 
     public List<Insurance> getInsuranceByUser(User user) {
         return repo.findByUser(user);
@@ -33,14 +27,8 @@ public class InsuranceService {
         return repo.save(insurance);
     }
 
-    public Insurance updateInsurance(int id,Insurance updatedInsurance){
-        return repo.findById(id).map(insurance -> {
-            insurance.setInsuranceName(updatedInsurance.getInsuranceName());
-            insurance.setInsuranceType(updatedInsurance.getInsuranceType());
-            insurance.setInsurancePrice(updatedInsurance.getInsurancePrice());
-            insurance.setInsuranceTerm(updatedInsurance.getInsuranceTerm());
-            return repo.save(insurance);
-        }).orElse(null);
+    public Insurance updateInsurance(Insurance insurance) {
+        return repo.save(insurance);
     }
 
     public void deleteInsurance(int insuranceId){
@@ -62,11 +50,5 @@ public class InsuranceService {
 
     public List<Insurance> searchByType(String type) {
         return repo.findByInsuranceTypeIgnoreCase(type);
-    }
-
-    public void uploadInsuranceDocument(int insuranceId, MultipartFile file) throws IOException {
-        Insurance insurance = repo.findById(insuranceId).orElseThrow(() -> new RuntimeException("Not found"));
-        insurance.setInsuranceDocument(file.getBytes());
-        repo.save(insurance);
     }
 }

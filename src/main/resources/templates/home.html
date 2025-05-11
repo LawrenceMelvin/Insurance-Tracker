@@ -46,11 +46,12 @@
       <tr th:each="insurance : ${insurances}">
         <td th:text="${insurance.insuranceName}">Insurance Name</td>
         <td th:text="${insurance.insuranceType}">Insurance Type</td>
-        <td th:text="${insurance.insurancePrice}">Price</td>
-        <td th:text="${insurance.insuranceTerm}">Years</td>
+        <td th:text="${insurance.insurancePrice}">Insurance Price</td>
+        <td th:text="${insurance.insuranceTerm}">Insurance Tenure</td>
+        <!-- Change this line in the table -->
         <td>
-          <a th:href="@{/insurance/edit(id=${insurance.insuranceId})}">Edit</a> |
-          <a th:href="@{/insurance/delete(id=${insurance.insuranceId})}">Delete</a>
+          <a th:href="@{/insurance/update/{id}(id=${insurance.insuranceId})}">Edit</a> |
+          <a th:href="@{/insurance/delete/{id}(id=${insurance.insuranceId})}">Delete</a>
         </td>
       </tr>
     </tbody>

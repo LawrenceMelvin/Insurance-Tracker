@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,14 +67,28 @@ public class InsuranceController {
         return "redirect:/"; // Redirect to the list of insurances
     }
 
-    @PutMapping("/update/{insuranceId}")
-    public ResponseEntity<Insurance> updateInsurance(@PathVariable int insuranceId,@RequestBody Insurance updatedInsurance){
-        Insurance insurance = service.updateInsurance(insuranceId, updatedInsurance);
+    @GetMapping("/update/{insuranceId}")
+    public String showUpdateForm(@PathVariable int insuranceId, Model model) {
+        Insurance insurance = service.getInsuranceById(insuranceId);
         if (insurance != null) {
-            return ResponseEntity.ok(insurance);  // Return updated record
-        } else {
-            return ResponseEntity.notFound().build();  // 404 Not Found if ID doesn't exist
+            model.addAttribute("insurance", insurance);
+            return "updateInsurance";
         }
+        return "redirect:/";
+    }
+
+    @PostMapping("/update/{insuranceId}")
+    public String updateInsurance(@PathVariable int insuranceId, @ModelAttribute Insurance insurance, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUserName(username);
+        Insurance existingInsurance = service.getInsuranceById(insuranceId);
+
+        if (existingInsurance != null && existingInsurance.getUser().equals(user)) {
+            insurance.setUser(user);
+            insurance.setInsuranceId(insuranceId);
+            service.updateInsurance(insurance);
+        }
+        return "redirect:/";
     }
 
     @DeleteMapping("/delete/{insuranceId}")
@@ -92,14 +107,14 @@ public class InsuranceController {
         }
     }
 
-    @PostMapping("/upload-db/{id}")
-    public ResponseEntity<String> uploadPdfToDb(@PathVariable int id, @RequestParam("file") MultipartFile file) {
-        try {
-            service.uploadInsuranceDocument(id, file);
-            return ResponseEntity.ok("PDF uploaded to database successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/upload-db/{id}")
+//    public ResponseEntity<String> uploadPdfToDb(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+//        try {
+//            service.uploadInsuranceDocument(id, file);
+//            return ResponseEntity.ok("PDF uploaded to database successfully!");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload: " + e.getMessage());
+//        }
+//    }
 
 }
