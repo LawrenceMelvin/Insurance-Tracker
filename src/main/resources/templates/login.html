@@ -27,5 +27,16 @@
         <a th:href="@{/forgot-password}">Forgot Password?</a>
     </div>
 </form>
+
+<form th:action="@{/login}" method="post">
+    <!-- Your existing login form -->
+</form>
+
+<div class="oauth-login">
+    <a th:href="@{/oauth2/authorization/google}" class="google-btn">
+        Login with Google
+    </a>
+</div>
+
 </body>
 </html>

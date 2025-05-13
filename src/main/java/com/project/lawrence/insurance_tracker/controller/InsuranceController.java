@@ -27,10 +27,6 @@ public class InsuranceController {
     @Autowired
     private UserRepository userRepository;
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<Insurance>> getInsuranceAllName(){
-//        return new ResponseEntity<>(service.getInsuranceName(), HttpStatus.OK);
-//    }
 
     @GetMapping("/search/name")
     public ResponseEntity<List<Insurance>> searchByName(@RequestParam String name) {
@@ -61,9 +57,7 @@ public class InsuranceController {
     @PostMapping("/add")
     public String addInsurance(@ModelAttribute Insurance insurance, Authentication authentication){
         String username = authentication.getName();
-        User user = userRepository.findByUserName(username);
-        insurance.setUser(user);
-        service.addInsurance(insurance);
+        service.addInsurance(insurance,username);
         return "redirect:/"; // Redirect to the list of insurances
     }
 

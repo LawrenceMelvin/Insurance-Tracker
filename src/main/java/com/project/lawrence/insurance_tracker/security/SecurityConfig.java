@@ -32,6 +32,11 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true") // Redirect to login page with error
                         .permitAll()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error=true")
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout") // Custom logout URL)
                         .logoutSuccessUrl("/login?logout") // Redirect to login page after logout

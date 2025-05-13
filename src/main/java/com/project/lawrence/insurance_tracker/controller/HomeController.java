@@ -27,7 +27,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model, Authentication authentication){
         String username = authentication.getName();
-        User user = userRepository.findByUserName(username);
+        User user = userRepository.findByUserEmail(username);
         List<Insurance> insurances = insuranceService.getInsuranceByUser(user);
         model.addAttribute("insurances", insurances);
         return "home";

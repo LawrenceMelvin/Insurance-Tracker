@@ -3,6 +3,7 @@ package com.project.lawrence.insurance_tracker.service;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
+import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,9 @@ public class InsuranceService {
     @Autowired
     Insurancerepo repo;
 
+    @Autowired
+    UserRepository userRepository;
+
     public List<Insurance> getInsuranceByUser(User user) {
         return repo.findByUser(user);
     }
@@ -23,7 +27,12 @@ public class InsuranceService {
         return repo.findById(id).orElse(null);
     }
 
-    public Insurance addInsurance(Insurance insurance){
+    public Insurance addInsurance(Insurance insurance, String userEmail){
+        User user = userRepository.findByUserEmail(userEmail);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        insurance.setUser(user);
         return repo.save(insurance);
     }
 
