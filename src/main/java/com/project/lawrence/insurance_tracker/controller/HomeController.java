@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class HomeController {
 
     @Autowired
@@ -25,13 +25,9 @@ public class HomeController {
     private UserRepository userRepository;
 
     @GetMapping("/")
-    public String home(Model model, Authentication authentication){
+    public List<Insurance> home(Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUserEmail(username);
-        List<Insurance> insurances = insuranceService.getInsuranceByUser(user);
-        model.addAttribute("insurances", insurances);
-        return "home";
+        return insuranceService.getInsuranceByUser(user);
     }
-
-
 }
