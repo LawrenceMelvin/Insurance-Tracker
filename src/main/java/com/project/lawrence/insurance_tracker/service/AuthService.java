@@ -53,8 +53,8 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Boolean login(String username, String password) {
-        User user = userRepository.findByUserName(username);
+    public Boolean login(String email, String password) {
+        User user = userRepository.findByUserEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getUserPassword())) {
             return true; // Return user if credentials are valid
         }

@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/auth/register", "forgot-password/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/auth/**", "forgot-password/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -33,11 +33,6 @@ public class SecurityConfig {
                         })
                         .failureHandler((request, response, exception) -> {
                             response.sendRedirect("http://localhost:5173/login?error=true");
-                        })
-                )
-                .logout(logout -> logout
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(HttpServletResponse.SC_OK);
                         })
                 )
                 .csrf(csrf -> csrf.disable())

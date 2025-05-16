@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @CrossOrigin
@@ -27,18 +28,6 @@ public class InsuranceController {
     @Autowired
     private UserRepository userRepository;
 
-
-    @GetMapping("/search/name")
-    public ResponseEntity<List<Insurance>> searchByName(@RequestParam String name) {
-        return ResponseEntity.ok(service.searchByName(name));
-    }
-
-    // ✅ Search by Type
-    @GetMapping("/search/type")
-    public ResponseEntity<List<Insurance>> searchByType(@RequestParam String type) {
-        return ResponseEntity.ok(service.searchByType(type));
-    }
-
     @GetMapping("/{insuranceId}")
     public ResponseEntity<Insurance> getById(@PathVariable int insuranceId){
         Insurance insurance = service.getInsuranceById(insuranceId);
@@ -49,16 +38,28 @@ public class InsuranceController {
         }
     }
 
-    @GetMapping("/add")
-    public String ShowaddInsurancePage() {
-        return "addInsurance"; // Load addInsurance.html
-    }
-
     @PostMapping("/add")
-    public String addInsurance(@ModelAttribute Insurance insurance, Authentication authentication){
-        String username = authentication.getName();
-        service.addInsurance(insurance,username);
-        return "redirect:/"; // Redirect to the list of insurances
+    public ResponseEntity<?> addInsurance(@RequestBody Insurance request, Authentication authentication) {
+        try {
+            String username = authentication.getName();
+
+            Insurance insurance = new Insurance();
+            insurance.setInsuranceName(request.getInsuranceName());
+            insurance.setInsuranceType(request.getInsuranceType());
+            insurance.setInsurancePrice(request.getInsurancePrice());
+            insurance.setInsuranceTerm(request.getInsuranceTerm());
+            Insurance savedInsurance = service.addInsurance(insurance, username);
+
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "Insurance added successfully",
+                    "insuranceId", savedInsurance.getInsuranceId()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", e.getMessage(),
+                    "status", "error"
+            ));
+        }
     }
 
     @GetMapping("/update/{insuranceId}")
@@ -100,15 +101,5 @@ public class InsuranceController {
             return ResponseEntity.notFound().build();
         }
     }
-
-//    @PostMapping("/upload-db/{id}")
-//    public ResponseEntity<String> uploadPdfToDb(@PathVariable int id, @RequestParam("file") MultipartFile file) {
-//        try {
-//            service.uploadInsuranceDocument(id, file);
-//            return ResponseEntity.ok("PDF uploaded to database successfully!");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload: " + e.getMessage());
-//        }
-//    }
 
 }
