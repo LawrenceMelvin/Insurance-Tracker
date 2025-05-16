@@ -27,7 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**", "/auth/**", "forgot-password/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form.disable())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler((request, response, authentication) -> {
                             response.sendRedirect("http://localhost:5173/home");

@@ -22,12 +22,12 @@ public class LoginController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/login")
-    public ResponseEntity<String> checkLoginStatus() {
-        return ResponseEntity.ok().build();
-    }
+//    @GetMapping("auh/login")
+//    public ResponseEntity<String> checkLoginStatus() {
+//        return ResponseEntity.ok().build();
+//    }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         logger.info("Login attempt for email: {}", request.getEmail());
 
