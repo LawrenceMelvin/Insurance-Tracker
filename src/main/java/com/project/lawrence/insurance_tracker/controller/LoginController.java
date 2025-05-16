@@ -22,12 +22,12 @@ public class LoginController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/auth/login")
+    @GetMapping("/login")
     public ResponseEntity<String> checkLoginStatus() {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         logger.info("Login attempt for email: {}", request.getEmail());
 
@@ -45,6 +45,15 @@ public class LoginController {
                         "message", "Invalid email or password",
                         "status", "error"
                 ));
+    }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok(Map.of(
+                "message", "Logged out successfully",
+                "status", "success"
+        ));
     }
 
     @GetMapping("/user")
