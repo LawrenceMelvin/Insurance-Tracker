@@ -13,23 +13,18 @@ import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
+
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user =  userRepository.findByUserName(username);
-        if(user == null){
-            throw new UsernameNotFoundException("User not found");
-        }
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getUserPassword(), List.of(new SimpleGrantedAuthority("USER")));
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        return new org.springframework.security.core.userdetails.User(
+                user.getUserEmail(),
+                user.getUserPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
     }
-
-    public User getUserByUsername(String username) {
-        return userRepository.findByUserName(username);
-    }
-
-    public User getUserByEmail(String useremail) {
-        return userRepository.findByUserEmail(useremail);
-    }
-
 }

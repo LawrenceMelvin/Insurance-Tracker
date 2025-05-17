@@ -5,6 +5,7 @@ import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,8 @@ public class ForgotPasswordController {
 
     @PostMapping
     public String processForgotPassword(@RequestParam("email") String email, Model model) {
-        User user = userRepository.findByUserEmail(email);
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         if (user != null) {
             String token = UUID.randomUUID().toString();
             authService.createPasswordResetTokenForUser(user, token);

@@ -5,6 +5,7 @@ import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.PasswordResetTokenRepository;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,8 @@ public class AuthService {
     }
 
     public Boolean login(String email, String password) {
-        User user = userRepository.findByUserEmail(email);
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         if (user != null && passwordEncoder.matches(password, user.getUserPassword())) {
             return true; // Return user if credentials are valid
         }

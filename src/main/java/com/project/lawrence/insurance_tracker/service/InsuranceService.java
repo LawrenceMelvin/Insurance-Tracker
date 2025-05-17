@@ -5,6 +5,7 @@ import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -28,7 +29,8 @@ public class InsuranceService {
     }
 
     public Insurance addInsurance(Insurance insurance, String userEmail){
-        User user = userRepository.findByUserEmail(userEmail);
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
         if (user == null) {
             throw new RuntimeException("User not found");
         }

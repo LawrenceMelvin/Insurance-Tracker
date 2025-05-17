@@ -4,6 +4,7 @@ import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -29,7 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
 
-        User user = userRepository.findByUserEmail(email);
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         if (user == null) {
             user = new User();
             user.setUserEmail(email);
