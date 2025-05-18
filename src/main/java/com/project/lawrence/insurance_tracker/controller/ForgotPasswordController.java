@@ -5,18 +5,16 @@ import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/forgot-password")
 public class ForgotPasswordController {
 
     @Autowired
@@ -25,25 +23,12 @@ public class ForgotPasswordController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping
-    public String showForgotPasswordForm() {
-        return "forgotPassword";
-    }
-
-    @PostMapping
-    public String processForgotPassword(@RequestParam("email") String email, Model model) {
-        User user = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        if (user != null) {
-            String token = UUID.randomUUID().toString();
-            authService.createPasswordResetTokenForUser(user, token);
-            // Send email with reset link (implement email service separately)
-            model.addAttribute("message", "Reset link sent to your email");
-            model.addAttribute("token", token);
-        } else {
-            model.addAttribute("error", "Email not found");
-        }
-        return "forgotPassword";
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        // Use the email value here
+        // ...
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/reset")

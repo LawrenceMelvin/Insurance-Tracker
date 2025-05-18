@@ -30,8 +30,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
 
-        User user = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        User user = userRepository.findByUserEmail(email).orElse(null);
         if (user == null) {
             user = new User();
             user.setUserEmail(email);

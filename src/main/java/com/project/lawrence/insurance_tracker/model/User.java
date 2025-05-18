@@ -17,6 +17,11 @@ public class User {
     @Column(nullable = false)
     private String userPassword;
     private String role;
+    private String verificationToken;
+    @Column(name = "is_verified")
+    private boolean isVerified;
+    @Column(name = "reset_token")
+    private String resetToken;
 
     public int getUserId() {
         return userId;
@@ -24,6 +29,30 @@ public class User {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 
     public String getUserName() {
