@@ -25,7 +25,7 @@ public class JwtTokenUtils {
         return !isTokenExpired(token);
     }
 
-    public String extractEmail(String token) {
+    public static String extractEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()

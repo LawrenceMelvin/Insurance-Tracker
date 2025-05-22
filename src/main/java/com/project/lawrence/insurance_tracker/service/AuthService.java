@@ -70,4 +70,9 @@ public class AuthService {
         user.setRole("ROLE_USER"); // Default role
         userRepository.save(user);
     }
+
+    public void updatePassword(User user, String newPassword) {
+        user.setUserPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

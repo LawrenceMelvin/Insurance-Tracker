@@ -27,17 +27,15 @@ public class EmailService {
 
     public void sendForgotPasswordEmail(String email, String verificationToken){
         String subject = "Forgot Password";
-        String path = "/auth/forgot-password/verify";
+        String frontend = "http://localhost:5173";
+        String path = frontend+"/auth/set-new-password";
         String message = "Click the link to reset your password: " + path + "?token=" + verificationToken;
         sendEmail(email, verificationToken,subject,path,message);
     }
 
     private void sendEmail(String email, String verificationToken, String subject, String path, String message) {
         try{
-            String actionUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path(path)
-                    .queryParam("token", verificationToken)
-                    .toUriString();
+            String actionUrl = path+"?token=" + verificationToken;
 
             String content = """
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; text-align: center;">
