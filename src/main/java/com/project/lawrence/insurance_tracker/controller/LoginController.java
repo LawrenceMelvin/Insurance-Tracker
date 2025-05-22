@@ -1,6 +1,8 @@
 package com.project.lawrence.insurance_tracker.controller;
 
 import com.project.lawrence.insurance_tracker.model.LoginRequest;
+import com.project.lawrence.insurance_tracker.model.User;
+import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +34,9 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserRepository userRepository;
+
 //    @GetMapping("auh/login")
 //    public ResponseEntity<String> checkLoginStatus() {
 //        return ResponseEntity.ok().build();
@@ -43,6 +49,16 @@ public class LoginController {
         try {
             Authentication auth = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            // Retrieve the user from the database
+            String email = loginData.get("email");
+            User user = userRepository.findByUserEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            if (!user.isVerified()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                        "message", "Email not verified",
+                        "status", "error"
+                ));
+            }
             HttpSession session = request.getSession(true); // create session
             logger.info("Session created with ID: {}", session.getId());
             return ResponseEntity.ok(Map.of("message", "Login successful"));

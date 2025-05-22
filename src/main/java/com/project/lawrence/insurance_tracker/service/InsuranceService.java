@@ -64,7 +64,8 @@ public class InsuranceService {
         dto.setInsuranceName(insurance.getInsuranceName());
         dto.setInsuranceType(insurance.getInsuranceType());
         dto.setInsurancePrice(insurance.getInsurancePrice());
-        dto.setInsuranceTerm(insurance.getInsuranceTerm());
+        dto.setInsuranceFromDate(insurance.getInsuranceFromDate());
+        dto.setInsuranceToDate(insurance.getInsuranceToDate());
         return dto;
     }
 

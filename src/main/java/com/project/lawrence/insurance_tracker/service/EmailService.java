@@ -20,7 +20,8 @@ public class EmailService {
 
     public void sendVerificationEmail(String email, String verificationToken){
         String subject = "Email Verification";
-        String path = "/auth/register/verify";
+        String frontend = "http://localhost:5173";
+        String path = frontend+"/auth/login";
         String message = "Click the link to verify your email: " + path + "?token=" + verificationToken;
         sendEmail(email, verificationToken,subject,path,message);
     }

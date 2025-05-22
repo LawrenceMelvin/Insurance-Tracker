@@ -1,11 +1,10 @@
 package com.project.lawrence.insurance_tracker.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @Component
 @Entity
@@ -21,8 +20,9 @@ public class Insurance {
     @Column(nullable = false)
     private int insurancePrice;
     @Column(nullable = false)
-    private int insuranceTerm;
-//    @Lob
+    private LocalDate insuranceFromDate;
+    @Column(nullable = false)
+    private LocalDate insuranceToDate;
 //    private byte[] insuranceDocument;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,21 +73,21 @@ public class Insurance {
         this.insurancePrice = insurancePrice;
     }
 
-    public int getInsuranceTerm() {
-        return insuranceTerm;
+    public LocalDate getInsuranceFromDate() {
+        return insuranceFromDate;
     }
 
-    public void setInsuranceTerm(int insuranceTerm) {
-        this.insuranceTerm = insuranceTerm;
+    public void setInsuranceFromDate(LocalDate insuranceFromDate) {
+        this.insuranceFromDate = insuranceFromDate;
     }
 
-//    public byte[] getInsuranceDocument() {
-//        return insuranceDocument;
-//    }
-//
-//    public void setInsuranceDocument(byte[] insuranceDocument) {
-//        this.insuranceDocument = insuranceDocument;
-//    }
+    public LocalDate getInsuranceToDate() {
+        return insuranceToDate;
+    }
+
+    public void setInsuranceToDate(LocalDate insuranceToDate) {
+        this.insuranceToDate = insuranceToDate;
+    }
 
     @Override
     public String toString() {
@@ -96,7 +96,6 @@ public class Insurance {
                 ", insuranceName='" + insuranceName + '\'' +
                 ", insuranceType='" + insuranceType + '\'' +
                 ", insurancePrice=" + insurancePrice +
-                ", insuranceTerm=" + insuranceTerm +
                 '}';
     }
 }

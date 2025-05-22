@@ -38,6 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setRole("ROLE_USER");
             // Set a random password for OAuth users
             user.setUserPassword(UUID.randomUUID().toString());
+            user.setVerified(true);
             userRepository.save(user);
         }
 

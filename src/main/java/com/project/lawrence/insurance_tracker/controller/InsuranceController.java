@@ -54,7 +54,8 @@ public class InsuranceController {
             insurance.setInsuranceName(request.getInsuranceName());
             insurance.setInsuranceType(request.getInsuranceType());
             insurance.setInsurancePrice(request.getInsurancePrice());
-            insurance.setInsuranceTerm(request.getInsuranceTerm());
+            insurance.setInsuranceFromDate(request.getInsuranceFromDate());
+            insurance.setInsuranceToDate(request.getInsuranceToDate());
             Insurance savedInsurance = service.addInsurance(insurance, username);
 
             return ResponseEntity.ok().body(Map.of(
@@ -91,7 +92,8 @@ public class InsuranceController {
         existingInsurance.setInsuranceName(insuranceDTO.getInsuranceName());
         existingInsurance.setInsuranceType(insuranceDTO.getInsuranceType());
         existingInsurance.setInsurancePrice(insuranceDTO.getInsurancePrice());
-        existingInsurance.setInsuranceTerm(insuranceDTO.getInsuranceTerm());
+        existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
+        existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
         service.updateInsurance(existingInsurance);
 
         return ResponseEntity.ok("Insurance updated successfully");

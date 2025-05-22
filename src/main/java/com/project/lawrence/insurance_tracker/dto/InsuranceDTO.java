@@ -1,15 +1,36 @@
 package com.project.lawrence.insurance_tracker.dto;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 public class InsuranceDTO {
     private int insuranceId;
     private String insuranceName;
     private String insuranceType;
     private int insurancePrice;
-    private int insuranceTerm;
+    private LocalDate insuranceFromDate;
+    private LocalDate insuranceToDate;
+
 
     // Getters and setters
     public int getInsuranceId() {
         return insuranceId;
+    }
+
+    public LocalDate getInsuranceFromDate() {
+        return insuranceFromDate;
+    }
+
+    public void setInsuranceFromDate(LocalDate insuranceFromDate) {
+        this.insuranceFromDate = insuranceFromDate;
+    }
+
+    public LocalDate getInsuranceToDate() {
+        return insuranceToDate;
+    }
+
+    public void setInsuranceToDate(LocalDate insuranceToDate) {
+        this.insuranceToDate = insuranceToDate;
     }
 
     public void setInsuranceId(int insuranceId) {
@@ -40,11 +61,4 @@ public class InsuranceDTO {
         this.insurancePrice = insurancePrice;
     }
 
-    public int getInsuranceTerm() {
-        return insuranceTerm;
-    }
-
-    public void setInsuranceTerm(int insuranceTerm) {
-        this.insuranceTerm = insuranceTerm;
-    }
 }
