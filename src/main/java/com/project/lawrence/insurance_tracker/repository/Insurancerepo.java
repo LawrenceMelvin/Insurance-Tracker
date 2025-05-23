@@ -1,5 +1,6 @@
 package com.project.lawrence.insurance_tracker.repository;
 
+import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -23,4 +25,6 @@ public interface Insurancerepo extends JpaRepository<Insurance,Integer> {
 
     @Query("SELECT i FROM Insurance i WHERE i.user = :user")
     List<Insurance> findByUser(@Param("user") User user);
+
+    List<Insurance> findByInsuranceToDate(LocalDate insuranceToDate);
 }

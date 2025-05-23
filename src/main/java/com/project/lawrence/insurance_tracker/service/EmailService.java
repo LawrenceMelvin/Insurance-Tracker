@@ -62,4 +62,35 @@ public class EmailService {
         }
     }
 
+    public void sendReminderEmail(String email, String subject, String message) {
+        try {
+//            String content = """
+//                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f4f4f4; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+//                    <h2 style="color: #333; text-align: center;">Insurance Expiry Reminder</h2>
+//                    <p style="font-size: 16px; color: #555; text-align: center;">
+//                        Dear User,
+//                    </p>
+//                    <p style="font-size: 16px; color: #555; text-align: center;">
+//                        Your insurance <strong>%s</strong> (Type: <strong>%s</strong>) is expiring on <strong>%s</strong>.
+//                    </p>
+//                    <p style="font-size: 16px; color: #555; text-align: center;">
+//                        Please take the necessary action to renew your insurance on time.
+//                    </p>
+//                    <p style="font-size: 12px; color: #aaa; text-align: center;">
+//                        This is an automated message. Please do not reply.
+//                    </p>
+//                </div>
+//            """.formatted(insuranceName, insuranceType, insuranceToDate);
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setFrom(from);
+            helper.setText(message, true);
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
