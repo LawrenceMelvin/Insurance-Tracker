@@ -51,6 +51,8 @@ public class ForgotPasswordController {
         User user = userRepository.findByUserEmail(email).orElse(null);
         if (user != null && user.getVerificationToken().equals(token)) {
             authService.updatePassword(user, newPassword);
+            user.setVerificationToken(null); // Clear the token after successful password reset
+            userRepository.save(user);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().body(Map.of(
