@@ -2,8 +2,11 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy your app source code
+# Copy everything (including hidden files like .mvn)
 COPY . .
+
+# Give execute permission to mvnw
+RUN chmod +x mvnw
 
 # Build the application
 RUN ./mvnw clean package -DskipTests
@@ -12,12 +15,11 @@ RUN ./mvnw clean package -DskipTests
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Copy the built jar from the previous stage
+# Copy the jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Use port provided by environment (e.g., Render)
+# Let Render dynamically inject the PORT
 ENV PORT=8080
 EXPOSE 8080
 
-# Start the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
