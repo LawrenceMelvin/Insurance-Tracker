@@ -4,6 +4,7 @@ import com.project.lawrence.insurance_tracker.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,9 @@ public class SecurityConfig {
         this.userService = userService;
     }
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,10 +44,10 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("http://localhost:5173/home");
+                            response.sendRedirect(frontendUrl+"/home");
                         })
                         .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("http://localhost:5173/login?error=true");
+                            response.sendRedirect(frontendUrl+"/login?error=true");
                         })
                 )
                 .csrf(csrf -> csrf

@@ -11,8 +11,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
     @Column(nullable = false, unique = true)
-    private String userName;
-    @Column(nullable = false, unique = true)
     private String userEmail;
     @Column(nullable = false)
     private String userPassword;
@@ -53,14 +51,6 @@ public class User {
 
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getUserEmail() {

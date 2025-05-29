@@ -1,7 +1,10 @@
 package com.project.lawrence.insurance_tracker.service;
 
+import com.project.lawrence.insurance_tracker.controller.LoginController;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,15 +15,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Service
 public class EmailService {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private JavaMailSender javaMailSender;
 
     @Value("${spring.mail.username}")
     private String from;
 
+    @Value("${frontend.url}")
+    private String frontend;
+
     public void sendVerificationEmail(String email, String verificationToken){
         String subject = "Email Verification";
-        String frontend = "http://localhost:5173";
         String path = frontend+"/auth/login";
         String message = "Click the link to verify your email: " + path + "?token=" + verificationToken;
         sendEmail(email, verificationToken,subject,path,message);
@@ -28,14 +35,15 @@ public class EmailService {
 
     public void sendForgotPasswordEmail(String email, String verificationToken){
         String subject = "Forgot Password";
-        String frontend = "http://localhost:5173";
         String path = frontend+"/auth/set-new-password";
         String message = "Click the link to reset your password: " + path + "?token=" + verificationToken;
+        logger.info("Sending forgot password email to: {}", email);
         sendEmail(email, verificationToken,subject,path,message);
     }
 
     private void sendEmail(String email, String verificationToken, String subject, String path, String message) {
         try{
+            logger.info("Sending email to: {}", email);
             String actionUrl = path+"?token=" + verificationToken;
 
             String content = """
@@ -53,7 +61,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mineMessage,true);
             helper.setTo(email);
             helper.setSubject(subject);
-            helper.setFrom(from);
+            helper.setFrom("no-reply@insuretracks.com");
             helper.setText(content,true);
             javaMailSender.send(mineMessage);
 
@@ -85,7 +93,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setTo(email);
             helper.setSubject(subject);
-            helper.setFrom(from);
+            helper.setFrom("no-reply@insuretracks.com");
             helper.setText(message, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {

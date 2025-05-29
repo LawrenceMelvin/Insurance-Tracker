@@ -29,7 +29,6 @@ public class AuthService {
     }
 
     public void registerUser(User user) {
-        user.setUserName(user.getUserName());
         user.setUserEmail(user.getUserEmail());
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword())); // Encrypt password
         user.setRole("ROLE_USER"); // Default role

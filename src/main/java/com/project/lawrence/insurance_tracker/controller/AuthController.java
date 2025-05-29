@@ -61,7 +61,6 @@ public class AuthController {
             String verificationToken = JwtTokenUtils.generateToken(registerData.get("userEmail"));
             User user = new User();
             user.setVerificationToken(verificationToken);
-            user.setUserName(registerData.get("userName"));
             user.setUserEmail(registerData.get("userEmail"));
             user.setUserPassword(registerData.get("userPassword"));
             authService.registerUser(user);
