@@ -8,6 +8,7 @@ public class InsuranceDTO {
     private String insuranceName;
     private String insuranceType;
     private int insurancePrice;
+    private int insuranceCoverage;
     private LocalDate insuranceFromDate;
     private LocalDate insuranceToDate;
 
@@ -61,4 +62,11 @@ public class InsuranceDTO {
         this.insurancePrice = insurancePrice;
     }
 
+    public int getInsuranceCoverage() {
+        return insuranceCoverage;
+    }
+
+    public void setInsuranceCoverage(int insuranceCoverage) {
+        this.insuranceCoverage = insuranceCoverage;
+    }
 }

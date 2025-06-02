@@ -54,6 +54,7 @@ public class InsuranceController {
             insurance.setInsuranceName(request.getInsuranceName());
             insurance.setInsuranceType(request.getInsuranceType());
             insurance.setInsurancePrice(request.getInsurancePrice());
+            insurance.setInsuranceCoverage(request.getInsuranceCoverage());
             insurance.setInsuranceFromDate(request.getInsuranceFromDate());
             insurance.setInsuranceToDate(request.getInsuranceToDate());
             Insurance savedInsurance = service.addInsurance(insurance, username);
@@ -92,6 +93,7 @@ public class InsuranceController {
         existingInsurance.setInsuranceName(insuranceDTO.getInsuranceName());
         existingInsurance.setInsuranceType(insuranceDTO.getInsuranceType());
         existingInsurance.setInsurancePrice(insuranceDTO.getInsurancePrice());
+        existingInsurance.setInsuranceCoverage(insuranceDTO.getInsuranceCoverage());
         existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
         existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
         service.updateInsurance(existingInsurance);

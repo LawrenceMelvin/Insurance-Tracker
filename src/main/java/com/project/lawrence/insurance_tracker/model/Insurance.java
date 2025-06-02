@@ -19,6 +19,7 @@ public class Insurance {
     private String insuranceType;
     @Column(nullable = false)
     private int insurancePrice;
+    private int insuranceCoverage; // Optional field for insurance coverage amount
     @Column(nullable = false)
     private LocalDate insuranceFromDate;
     @Column(nullable = false)
@@ -87,6 +88,14 @@ public class Insurance {
 
     public void setInsuranceToDate(LocalDate insuranceToDate) {
         this.insuranceToDate = insuranceToDate;
+    }
+
+    public int getInsuranceCoverage() {
+        return insuranceCoverage;
+    }
+
+    public void setInsuranceCoverage(int insuranceCoverage) {
+        this.insuranceCoverage = insuranceCoverage;
     }
 
     @Override
