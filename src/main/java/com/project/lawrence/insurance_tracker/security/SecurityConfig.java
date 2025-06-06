@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/auth/**", "/forgot-password/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/auth/**", "/forgot-password/**","/schedule").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/insurance/update/**").authenticated()
                         .anyRequest().authenticated()
                 )
