@@ -50,6 +50,19 @@ public class InsuranceController {
         try {
             String username = authentication.getName();
 
+            // Retrieve the user by email
+            User user = userRepository.findByUserEmail(username).orElseThrow(() ->
+                    new IllegalArgumentException("User not found"));
+
+            // Check if the user already has 10 insurance entries
+            List<Insurance> userInsurances = service.getInsuranceByUser(user);
+            if (userInsurances.size() >= 10) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "message", "User cannot have more than 10 insurance entries",
+                        "status", "error"
+                ));
+            }
+
             Insurance insurance = new Insurance();
             insurance.setInsuranceName(request.getInsuranceName());
             insurance.setInsuranceType(request.getInsuranceType());
