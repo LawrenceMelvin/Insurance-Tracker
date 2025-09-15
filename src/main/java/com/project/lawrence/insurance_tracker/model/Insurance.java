@@ -24,6 +24,8 @@ public class Insurance {
     private LocalDate insuranceFromDate;
     @Column(nullable = false)
     private LocalDate insuranceToDate;
+    @Column(name="date_of_birth")
+    private LocalDate dateOfBirth;
 //    private byte[] insuranceDocument;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -96,6 +98,14 @@ public class Insurance {
 
     public void setInsuranceCoverage(int insuranceCoverage) {
         this.insuranceCoverage = insuranceCoverage;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     @Override

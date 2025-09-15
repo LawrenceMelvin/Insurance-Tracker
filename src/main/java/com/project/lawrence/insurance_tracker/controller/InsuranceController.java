@@ -54,6 +54,11 @@ public class InsuranceController {
             User user = userRepository.findByUserEmail(username).orElseThrow(() ->
                     new IllegalArgumentException("User not found"));
 
+            if(request.getDateOfBirth() != null) {
+                user.setDateOfBirth(request.getDateOfBirth());
+                userRepository.save(user);
+            }
+
             // Check if the user already has 10 insurance entries
             List<Insurance> userInsurances = service.getInsuranceByUser(user);
             if (userInsurances.size() >= 10) {
@@ -70,6 +75,7 @@ public class InsuranceController {
             insurance.setInsuranceCoverage(request.getInsuranceCoverage());
             insurance.setInsuranceFromDate(request.getInsuranceFromDate());
             insurance.setInsuranceToDate(request.getInsuranceToDate());
+            insurance.setDateOfBirth(request.getDateOfBirth());
             Insurance savedInsurance = service.addInsurance(insurance, username);
 
             return ResponseEntity.ok().body(Map.of(
@@ -109,6 +115,7 @@ public class InsuranceController {
         existingInsurance.setInsuranceCoverage(insuranceDTO.getInsuranceCoverage());
         existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
         existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
+        existingInsurance.setDateOfBirth(insuranceDTO.getDateOfBirth());
         service.updateInsurance(existingInsurance);
 
         return ResponseEntity.ok("Insurance updated successfully");

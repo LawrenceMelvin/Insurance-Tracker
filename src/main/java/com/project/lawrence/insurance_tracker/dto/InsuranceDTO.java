@@ -11,6 +11,7 @@ public class InsuranceDTO {
     private int insuranceCoverage;
     private LocalDate insuranceFromDate;
     private LocalDate insuranceToDate;
+    private LocalDate dateOfBirth;
 
 
     // Getters and setters
@@ -68,5 +69,13 @@ public class InsuranceDTO {
 
     public void setInsuranceCoverage(int insuranceCoverage) {
         this.insuranceCoverage = insuranceCoverage;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }

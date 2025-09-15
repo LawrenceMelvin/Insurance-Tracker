@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.NonNull;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "`user`")
 public class User {
@@ -20,6 +22,8 @@ public class User {
     private boolean isVerified;
     @Column(name = "reset_token")
     private String resetToken;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     public int getUserId() {
         return userId;
@@ -75,5 +79,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }
