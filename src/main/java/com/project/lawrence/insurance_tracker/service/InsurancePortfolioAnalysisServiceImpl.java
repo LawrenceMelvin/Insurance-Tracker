@@ -1,7 +1,6 @@
 package com.project.lawrence.insurance_tracker.service;
 
 import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
-import com.project.lawrence.insurance_tracker.model.Insurance;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

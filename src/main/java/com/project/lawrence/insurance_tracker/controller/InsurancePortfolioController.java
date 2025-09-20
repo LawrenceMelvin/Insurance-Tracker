@@ -23,5 +23,5 @@ public class InsurancePortfolioController {
     @GetMapping("/scan")
     public Map<String, String> getPortfolio(@RequestParam("insuranceList") List<InsuranceDTO> insuranceList) {
         return portfolioAnalysisService.analyzePortfolio(insuranceList);
-    };
+    }
 }
