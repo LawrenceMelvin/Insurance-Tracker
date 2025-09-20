@@ -3,6 +3,8 @@ package com.project.lawrence.insurance_tracker.service;
 import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +12,11 @@ import java.util.Map;
 public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolioAnalysisService {
 
     @Override
-    public Map<String, String> analyzePortfolio(List<InsuranceDTO> insuranceList) {
+    public Map<String, Object> analyzePortfolio(List<InsuranceDTO> insuranceList) {
+        Map<String, Object> result = new HashMap<>();
+        List<String> coverageGaps = new ArrayList<>();
+        List<String> strengths = new ArrayList<>();
+        System.out.println("Portfolio Scanner");
         boolean hasHealth = insuranceList.stream()
                 .anyMatch(i -> "HEALTH".equalsIgnoreCase(i.getInsuranceType()));
         boolean hasLife = insuranceList.stream()
@@ -42,9 +48,23 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
             }
         }
 
-        return Map.of(
-                "rating", rating,
-                "suggestion", suggestion
-        );
+        result.put("overallRating", rating);
+        result.put("score", "Good".equals(rating) ? 100 : "Average".equals(rating) ? 50 : 0);
+        result.put("suggestions", List.of(suggestion));
+
+        if (!hasHealth) coverageGaps.add("Missing Health insurance");
+        if (!hasLife) coverageGaps.add("Missing Life insurance");
+        //if (hasHealth && hasLife && totalCoverage < 100000) coverageGaps.add("Total coverage below ₹1,00,000");
+
+        if (hasHealth) strengths.add("Has Health insurance");
+        if (hasLife) strengths.add("Has Life insurance");
+        //if (totalCoverage >= 300000) strengths.add("High total coverage");
+
+        result.put("coverageGaps", coverageGaps);
+        result.put("strengths", strengths);
+
+        System.out.println(result);
+
+        return result;
     }
 }
