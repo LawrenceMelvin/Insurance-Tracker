@@ -1,13 +1,9 @@
 package com.project.lawrence.insurance_tracker.service;
 
-import com.project.lawrence.insurance_tracker.dto.ChatRequest;
-import com.project.lawrence.insurance_tracker.dto.Message;
 import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolioAnalysisService {
 
-    @Autowired
-    @Qualifier("openaiRestTemplate")
-    private RestTemplate restTemplate;
+    private final ChatClient chatClient;
 
-    @Value("openai.model")
-    private String model;
+    // With starter, ChatClient.Builder is auto-configured
+    public InsurancePortfolioAnalysisServiceImpl(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+    }
 
     @Override
     public Map<String, Object> analyzePortfolio(List<InsuranceDTO> insuranceList) {
@@ -85,22 +81,42 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
     @Override
     public Map<String, Object> aiAnalyzeportfolio(List<InsuranceDTO> insuranceDTOList) {
 
-        Map<String, Object> result = new HashMap<>();
-        String insurancetext = insuranceDTOList.stream().map(
-                p->String.format("%s: type=%s, coverage=%s, premium=%s, dob=%s , start=%s, expiry=%s",
+        String insuranceText = insuranceDTOList.stream().map(
+                p -> String.format(
+                        "%s: coverage=%s, premium=%s, dob=%s, start=%s, expiry=%s",
                         p.getInsuranceType(),
                         p.getInsuranceCoverage(),
                         p.getInsurancePrice(),
                         p.getDateOfBirth(),
                         p.getInsuranceFromDate(),
-                        p.getInsuranceToDate())
+                        p.getInsuranceToDate()
+                )
         ).collect(Collectors.joining("\n"));
 
-        System.out.println(insurancetext);
+        System.out.println(insuranceText);
 
-        String prompt = "You are an expert insurance advisor. Produce a short (3-6 sentence) summary for the user that includes: 1) overall rating (BAD/AVERAGE/GOOD) with a one-line explanation, 2) top 3 improvements prioritized, 3) one positive comment. Use the following structured information:\\n\\n";
-        ChatRequest chatRequest = new ChatRequest(model,new Message[]{new Message("user", prompt)},0.2);
-        return Map.of();
+        // Prompt
+        String prompt = """
+                You are an expert insurance advisor. 
+                Produce a short (3-6 sentence) summary for the user that includes:
+                1) overall rating (BAD/AVERAGE/GOOD) with a one-line explanation,
+                2) top 3 improvements prioritized,
+                3) one positive comment.
+                
+                Use the following structured information:
+
+                """ + insuranceText;
+
+        // Call Spring AI client
+        String aiReply = chatClient
+                .prompt()
+                .user(prompt)
+                .call()
+                .content();
+
+        System.out.println(aiReply);
+
+        return Map.of("analysis", aiReply);
     }
 
 

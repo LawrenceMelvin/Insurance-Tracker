@@ -20,6 +20,7 @@ public class InsurancePortfolioController {
     @PostMapping("/scan")
     public Map<String, Object> getPortfolio(@RequestBody List<InsuranceDTO> insuranceList) {
         System.out.println(insuranceList);
-        return portfolioAnalysisService.analyzePortfolio(insuranceList);
+       // return portfolioAnalysisService.analyzePortfolio(insuranceList);
+        return portfolioAnalysisService.aiAnalyzeportfolio(insuranceList);
     }
 }
