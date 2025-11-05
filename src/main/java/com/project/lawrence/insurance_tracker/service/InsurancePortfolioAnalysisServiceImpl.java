@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,6 +82,7 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
 
     @Override
     public Map<String, Object> aiAnalyzeportfolio(List<InsuranceDTO> insuranceDTOList) {
+        Map<String, Object> result = new HashMap<>();
 
         String insuranceText = insuranceDTOList.stream().map(
                 p -> String.format(
@@ -94,18 +97,37 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
         ).collect(Collectors.joining("\n"));
 
         System.out.println(insuranceText);
+        boolean hasHealth = insuranceDTOList.stream()
+                .anyMatch(i -> "HEALTH".equalsIgnoreCase(i.getInsuranceType()));
+        boolean hasLife = insuranceDTOList.stream()
+                .anyMatch(i -> "LIFE".equalsIgnoreCase(i.getInsuranceType()));
+
+        String rating ="";
+        String suggestion ="";
+
+        if (!hasHealth && !hasLife) {
+            //rating = "Bad";
+            suggestion = "Add both Health and Life insurance to your portfolio.";
+        } else if (!hasHealth) {
+            //rating = "Bad";
+            suggestion = "Add Health insurance to your portfolio.";
+        } else if (!hasLife) {
+            //rating = "Bad";
+            suggestion = "Add Life insurance to your portfolio.";
+        }
+        
+        System.out.println(suggestion);
 
         // Prompt
-        String prompt = """
-                You are an expert insurance advisor. 
-                Produce a short (3-6 sentence) summary for the user that includes:
-                1) overall rating (BAD/AVERAGE/GOOD) with a one-line explanation,
-                2) top 3 improvements prioritized,
-                3) one positive comment.
-                
-                Use the following structured information:
-
-                """ + insuranceText;
+        String prompt =  """
+                You will be given user insurance portfolio, you have to 
+                suggest three improvements for the user based on the details below 
+                and the suggestions provided.
+                """
+                + suggestion
+                + insuranceText
+                +"Display the result as Suggestion, and give a overall rating as rating= Bad or Average or Good" +
+                " for user insurance portfolio";
 
         // Call Spring AI client
         String aiReply = chatClient
@@ -116,7 +138,29 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
 
         System.out.println(aiReply);
 
-        return Map.of("analysis", aiReply);
+        List<String> suggestions = new ArrayList<>();
+        Pattern suggestionPattern = Pattern.compile("\\*\\*\\d+\\.\\s*\\*\\*(.*?)\\*\\*:\\s*(.*?)(?=\\n\\d+\\.|\\n\\*\\*Overall Rating\\*\\*|$)", Pattern.DOTALL);
+        Pattern ratingpattern = Pattern.compile("\\*\\*Overall Rating\\*\\*:\\s*(\\w+)",Pattern.CASE_INSENSITIVE);
+        Matcher suggestionMatcher = suggestionPattern.matcher(aiReply);
+        while (suggestionMatcher.find()) {
+            String title = suggestionMatcher.group(1).trim();
+            String detail = suggestionMatcher.group(2).trim();
+            suggestions.add(title + ": " + detail);
+        }
+
+        Matcher ratingmatcher = ratingpattern.matcher(aiReply);
+        if (ratingmatcher.find()){
+            rating = ratingmatcher.group(1).trim();
+        }
+
+        System.out.println(suggestions);
+        System.out.println(rating);
+        result.put("suggestion",suggestions);
+        result.put("rating",rating);
+
+//        System.out.println(aiReply);
+
+        return result;
     }
 
 
