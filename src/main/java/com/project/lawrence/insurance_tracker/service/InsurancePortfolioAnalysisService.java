@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface InsurancePortfolioAnalysisService {
 
-    public Map<String, String> analyzePortfolio(List<InsuranceDTO> insuranceList) ;
+    public Map<String, Object> analyzePortfolio(List<InsuranceDTO> insuranceList) ;
+
+    public Map<String, Object> aiAnalyzeportfolio(List<InsuranceDTO> insuranceDTOList);
 
 }

@@ -27,6 +27,7 @@ public class InsuranceTrackerApplication {
 		System.setProperty("DATASOURCE_USERNAME", dotenv.get("DATASOURCE_USERNAME"));
 		System.setProperty("DATASOURCE_PASSWORD", dotenv.get("DATASOURCE_PASSWORD"));
 		System.setProperty("FRONTEND_URL", dotenv.get("FRONTEND_URL"));
+		System.setProperty("OPENAI_API_KEY", dotenv.get("OPENAI_API_KEY"));
 	}
 
 	public static void main(String[] args) {
