@@ -1,0 +1,30 @@
+# dockerignore
+# Ignore Maven build output (large)
+target/
+**/target/
+
+# Version control and editor files
+.git
+.gitignore
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+logs/
+tmp/
+
+# Node / other deps if present
+node_modules/
+coverage/
+out/
+
+# Local artifacts
+*.jar
+*.war
+*.ear
