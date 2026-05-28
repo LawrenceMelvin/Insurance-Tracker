@@ -88,4 +88,27 @@ public class User {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "family_group_id")
+    private FamilyGroup familyGroup;
+
+    @Column(name = "family_role")
+    private String familyRole;
+
+    public FamilyGroup getFamilyGroup() {
+        return familyGroup;
+    }
+
+    public void setFamilyGroup(FamilyGroup familyGroup) {
+        this.familyGroup = familyGroup;
+    }
+
+    public String getFamilyRole() {
+        return familyRole;
+    }
+
+    public void setFamilyRole(String familyRole) {
+        this.familyRole = familyRole;
+    }
 }

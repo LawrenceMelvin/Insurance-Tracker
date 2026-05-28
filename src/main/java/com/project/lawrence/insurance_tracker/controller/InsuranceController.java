@@ -3,7 +3,9 @@ package com.project.lawrence.insurance_tracker.controller;
 import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.model.User;
+import com.project.lawrence.insurance_tracker.model.FamilyMemberProfile;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
+import com.project.lawrence.insurance_tracker.repository.FamilyMemberProfileRepository;
 import com.project.lawrence.insurance_tracker.service.InsuranceService;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.ILoggerFactory;
@@ -34,6 +36,9 @@ public class InsuranceController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FamilyMemberProfileRepository familyMemberProfileRepository;
 
     @GetMapping("/{insuranceId}")
     public ResponseEntity<InsuranceDTO> getById(@PathVariable int insuranceId, Authentication authentication) {
@@ -76,6 +81,10 @@ public class InsuranceController {
             insurance.setInsuranceFromDate(request.getInsuranceFromDate());
             insurance.setInsuranceToDate(request.getInsuranceToDate());
             insurance.setDateOfBirth(request.getDateOfBirth());
+            if (request.getFamilyMemberProfile() != null && request.getFamilyMemberProfile().getProfileId() != 0) {
+                FamilyMemberProfile profile = familyMemberProfileRepository.findById(request.getFamilyMemberProfile().getProfileId()).orElse(null);
+                insurance.setFamilyMemberProfile(profile);
+            }
             Insurance savedInsurance = service.addInsurance(insurance, username);
 
             return ResponseEntity.ok().body(Map.of(
@@ -116,6 +125,12 @@ public class InsuranceController {
         existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
         existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
         existingInsurance.setDateOfBirth(insuranceDTO.getDateOfBirth());
+        if (insuranceDTO.getFamilyMemberProfileId() != null) {
+            FamilyMemberProfile profile = familyMemberProfileRepository.findById(insuranceDTO.getFamilyMemberProfileId()).orElse(null);
+            existingInsurance.setFamilyMemberProfile(profile);
+        } else {
+            existingInsurance.setFamilyMemberProfile(null);
+        }
         service.updateInsurance(existingInsurance);
 
         return ResponseEntity.ok("Insurance updated successfully");

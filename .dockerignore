@@ -28,3 +28,7 @@ out/
 *.jar
 *.war
 *.ear
+
+# Environment configurations
+.env
+*.env

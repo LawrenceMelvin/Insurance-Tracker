@@ -108,6 +108,18 @@ public class Insurance {
         this.dateOfBirth = dateOfBirth;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="family_member_profile_id")
+    private FamilyMemberProfile familyMemberProfile;
+
+    public FamilyMemberProfile getFamilyMemberProfile() {
+        return familyMemberProfile;
+    }
+
+    public void setFamilyMemberProfile(FamilyMemberProfile familyMemberProfile) {
+        this.familyMemberProfile = familyMemberProfile;
+    }
+
     @Override
     public String toString() {
         return "Insurance{" +

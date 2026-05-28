@@ -32,9 +32,9 @@ public class InsuranceTrackerApplication {
 	}
 
 	private static void setSystemPropertyIfPresent(String key, Dotenv dotenv) {
-		String value = dotenv.get(key);
+		String value = System.getenv(key); // prioritize system env variables (Cloud Run, Docker host)
 		if (value == null) {
-			value = System.getenv(key); // fallback to system env variables
+			value = dotenv.get(key); // fallback to .env file for local development
 		}
 		if (value != null) {
 			System.setProperty(key, value);

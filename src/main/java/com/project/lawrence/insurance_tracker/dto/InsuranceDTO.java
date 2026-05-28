@@ -78,4 +78,23 @@ public class InsuranceDTO {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    private Integer familyMemberProfileId;
+    private String belongsToName;
+
+    public Integer getFamilyMemberProfileId() {
+        return familyMemberProfileId;
+    }
+
+    public void setFamilyMemberProfileId(Integer familyMemberProfileId) {
+        this.familyMemberProfileId = familyMemberProfileId;
+    }
+
+    public String getBelongsToName() {
+        return belongsToName;
+    }
+
+    public void setBelongsToName(String belongsToName) {
+        this.belongsToName = belongsToName;
+    }
 }

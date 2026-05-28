@@ -26,6 +26,10 @@ public class InsuranceService {
         return repo.findByUser(user);
     }
 
+    public List<Insurance> getPersonalInsuranceByUser(User user) {
+        return repo.findPersonalByUser(user);
+    }
+
     public Insurance getInsuranceById(int id) {
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Insurance not found with ID: " + id));
@@ -67,6 +71,13 @@ public class InsuranceService {
         dto.setInsuranceCoverage(insurance.getInsuranceCoverage());
         dto.setInsuranceFromDate(insurance.getInsuranceFromDate());
         dto.setInsuranceToDate(insurance.getInsuranceToDate());
+        dto.setDateOfBirth(insurance.getDateOfBirth());
+        if (insurance.getFamilyMemberProfile() != null) {
+            dto.setFamilyMemberProfileId(insurance.getFamilyMemberProfile().getProfileId());
+            dto.setBelongsToName(insurance.getFamilyMemberProfile().getFullName());
+        } else {
+            dto.setBelongsToName("Self");
+        }
         return dto;
     }
 
