@@ -81,6 +81,7 @@ public class InsuranceController {
             insurance.setInsuranceFromDate(request.getInsuranceFromDate());
             insurance.setInsuranceToDate(request.getInsuranceToDate());
             insurance.setDateOfBirth(request.getDateOfBirth());
+            insurance.setPolicyAnalysisJson(request.getPolicyAnalysisJson());
             if (request.getFamilyMemberProfile() != null && request.getFamilyMemberProfile().getProfileId() != 0) {
                 FamilyMemberProfile profile = familyMemberProfileRepository.findById(request.getFamilyMemberProfile().getProfileId()).orElse(null);
                 insurance.setFamilyMemberProfile(profile);
@@ -125,6 +126,7 @@ public class InsuranceController {
         existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
         existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
         existingInsurance.setDateOfBirth(insuranceDTO.getDateOfBirth());
+        existingInsurance.setPolicyAnalysisJson(insuranceDTO.getPolicyAnalysisJson());
         if (insuranceDTO.getFamilyMemberProfileId() != null) {
             FamilyMemberProfile profile = familyMemberProfileRepository.findById(insuranceDTO.getFamilyMemberProfileId()).orElse(null);
             existingInsurance.setFamilyMemberProfile(profile);

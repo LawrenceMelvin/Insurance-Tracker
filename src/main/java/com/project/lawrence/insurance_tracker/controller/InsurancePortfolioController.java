@@ -18,9 +18,11 @@ public class InsurancePortfolioController {
     private final InsurancePortfolioAnalysisService portfolioAnalysisService;
 
     @PostMapping("/scan")
-    public Map<String, Object> getPortfolio(@RequestBody List<InsuranceDTO> insuranceList) {
-        System.out.println(insuranceList);
-       // return portfolioAnalysisService.analyzePortfolio(insuranceList);
-        return portfolioAnalysisService.aiAnalyzeportfolio(insuranceList);
+    public Map<String, Object> getPortfolio(
+            @RequestBody List<InsuranceDTO> insuranceList,
+            @RequestHeader(value = "X-User-Currency", defaultValue = "USD") String currency
+    ) {
+        System.out.println("Scanning portfolio with currency: " + currency);
+        return portfolioAnalysisService.aiAnalyzeportfolio(insuranceList, currency);
     }
 }

@@ -85,45 +85,96 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
     }
 
     @Override
-    public Map<String, Object> aiAnalyzeportfolio(List<InsuranceDTO> insuranceDTOList) {
-        Map<String, Object> result;
+    public Map<String, Object> aiAnalyzeportfolio(List<InsuranceDTO> insuranceDTOList, String currency) {
+        if (insuranceDTOList == null || insuranceDTOList.isEmpty()) {
+            Map<String, Object> empty = new HashMap<>();
+            empty.put("overallRating", "Bad");
+            empty.put("score", 0);
+            empty.put("suggestions", List.of("Add some insurance policies to scan your portfolio."));
+            empty.put("coverageGaps", List.of("No insurance policies found."));
+            empty.put("strengths", List.of());
+            return empty;
+        }
 
         String insuranceText = insuranceDTOList.stream().map(
                 p -> String.format(
-                        "%s: coverage=%s, premium=%s, dob=%s, start=%s, expiry=%s",
+                        "Type: %s, Name: %s, Coverage Amount: %s, Premium Price: %s, DOB: %s, Start Date: %s, Expiry Date: %s, Policyholder: %s",
                         p.getInsuranceType(),
+                        p.getInsuranceName(),
                         p.getInsuranceCoverage(),
                         p.getInsurancePrice(),
                         p.getDateOfBirth(),
                         p.getInsuranceFromDate(),
-                        p.getInsuranceToDate()
+                        p.getInsuranceToDate(),
+                        p.getBelongsToName() != null ? p.getBelongsToName() : "Self"
                 )
         ).collect(Collectors.joining("\n"));
 
-        String prompt =  """
-            You will be given a user's insurance portfolio. Output exactly four labeled sections and nothing else:
-            Suggestions:, Coverage Gaps:, Strengths:, Overall Rating:
-        
-            - Under \\"Suggestions:\\" provide 3 improvement items (numbered or bulleted).
-            - Under \\"Coverage Gaps:\\" list any missing policies or shortfalls.
-            - Under \\"Strengths:\\" list positive aspects of the portfolio.
-            - Under \\"Overall Rating:\\" give one of: Bad, Average, Good (single-line).
-        
-            Use plain text (no extra commentary). Example headers may be bolded or plain; parser will handle both.
-            """ + "\n\nCurrent portfolio:\n" + insuranceText + "\n";
+        String prompt =  String.format("""
+            You are a professional financial and insurance advisor. Analyze the user's insurance portfolio.
+            
+            Perform a thorough analysis and populate these fields in the requested JSON structure:
+            1. overallRating: Evaluate the overall portfolio quality and assign exactly "Good", "Average", or "Bad".
+            2. score: A numeric rating from 0 to 100 representing portfolio health.
+            3. suggestions: Exactly 3 clear, distinct, actionable recommendations for improvement. Look at coverage limits, expiration dates, and distribution.
+            4. coverageGaps: Identify missing policies (such as missing health, life, auto, home/renters, or disability insurance) for any of the policyholders/family members.
+            5. strengths: Key positive aspects of their current coverage.
+            
+            Evaluation Context:
+            - The currency of all coverage and premium amounts in this portfolio is: %s.
+            - Ensure any advice, coverage assessments, or cost recommendations align with this currency context (e.g. if the currency is INR, a health policy of 500,000 is a standard/good amount, whereas in USD, a health policy of 500,000 is very high).
+            - Pay close attention to the "Policyholder" field. If family members (like "Spouse", "Child") are listed but missing key coverage (like Health or Life), note this as a coverage gap.
+            - If any policies are expired or expiring soon, highlight this.
+            
+            Current portfolio:
+            %s
+            """, currency, insuranceText);
 
-        String aiReply = chatClient
-                .prompt()
-                .user(prompt)
-                .call()
-                .content();
+        try {
+            PortfolioAnalysisRecord analysis = chatClient
+                    .prompt()
+                    .user(prompt)
+                    .call()
+                    .entity(PortfolioAnalysisRecord.class);
 
-        logger.info("AI Reply: {}", aiReply);
-        result = getParsedAiResponse(aiReply);
+            logger.info("Structured AI Analysis parsed successfully: {}", analysis);
 
-        logger.info("AI Analysis Result: {}", result);
+            Map<String, Object> result = new HashMap<>();
+            result.put("overallRating", analysis.overallRating() != null ? analysis.overallRating() : "Average");
+            result.put("score", analysis.score());
+            result.put("suggestions", analysis.suggestions() != null ? analysis.suggestions() : List.of());
+            result.put("coverageGaps", analysis.coverageGaps() != null ? analysis.coverageGaps() : List.of());
+            result.put("strengths", analysis.strengths() != null ? analysis.strengths() : List.of());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error calling Spring AI / Gemini structured output, falling back to legacy regex parsing", e);
+            
+            // Fallback: build a prompt for legacy string parsing
+            String fallbackPrompt = """
+                You will be given a user's insurance portfolio. Output exactly four labeled sections and nothing else:
+                Suggestions:, Coverage Gaps:, Strengths:, Overall Rating:
+            
+                - Under "Suggestions:" provide 3 improvement items.
+                - Under "Coverage Gaps:" list any missing policies or shortfalls.
+                - Under "Strengths:" list positive aspects of the portfolio.
+                - Under "Overall Rating:" give one of: Bad, Average, Good (single-line).
+            
+                Use plain text.
+                """ + "\n\nCurrent portfolio:\n" + insuranceText + "\n";
 
-        return result;
+            try {
+                String aiReply = chatClient
+                        .prompt()
+                        .user(fallbackPrompt)
+                        .call()
+                        .content();
+                logger.info("AI Fallback Reply: {}", aiReply);
+                return getParsedAiResponse(aiReply);
+            } catch (Exception ex) {
+                logger.error("AI Fallback call failed, returning manual calculation", ex);
+                return analyzePortfolio(insuranceDTOList);
+            }
+        }
     }
 
     private Map<String, Object> getParsedAiResponse(String aiResponse) {
@@ -263,3 +314,11 @@ public class InsurancePortfolioAnalysisServiceImpl implements InsurancePortfolio
         return cleaned;
     }
 }
+
+record PortfolioAnalysisRecord(
+    String overallRating,
+    int score,
+    List<String> suggestions,
+    List<String> coverageGaps,
+    List<String> strengths
+) {}

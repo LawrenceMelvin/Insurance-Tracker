@@ -12,9 +12,17 @@ public class InsuranceDTO {
     private LocalDate insuranceFromDate;
     private LocalDate insuranceToDate;
     private LocalDate dateOfBirth;
+    private String policyAnalysisJson;
 
 
     // Getters and setters
+    public String getPolicyAnalysisJson() {
+        return policyAnalysisJson;
+    }
+
+    public void setPolicyAnalysisJson(String policyAnalysisJson) {
+        this.policyAnalysisJson = policyAnalysisJson;
+    }
     public int getInsuranceId() {
         return insuranceId;
     }

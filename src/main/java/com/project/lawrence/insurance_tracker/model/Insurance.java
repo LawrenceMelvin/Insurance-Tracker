@@ -28,9 +28,20 @@ public class Insurance {
     private LocalDate dateOfBirth;
 //    private byte[] insuranceDocument;
 
+    @Column(name = "policy_analysis_json", columnDefinition = "TEXT")
+    private String policyAnalysisJson;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    public String getPolicyAnalysisJson() {
+        return policyAnalysisJson;
+    }
+
+    public void setPolicyAnalysisJson(String policyAnalysisJson) {
+        this.policyAnalysisJson = policyAnalysisJson;
+    }
 
     public Insurance() {
 

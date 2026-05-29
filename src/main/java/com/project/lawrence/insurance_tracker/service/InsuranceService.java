@@ -72,6 +72,7 @@ public class InsuranceService {
         dto.setInsuranceFromDate(insurance.getInsuranceFromDate());
         dto.setInsuranceToDate(insurance.getInsuranceToDate());
         dto.setDateOfBirth(insurance.getDateOfBirth());
+        dto.setPolicyAnalysisJson(insurance.getPolicyAnalysisJson());
         if (insurance.getFamilyMemberProfile() != null) {
             dto.setFamilyMemberProfileId(insurance.getFamilyMemberProfile().getProfileId());
             dto.setBelongsToName(insurance.getFamilyMemberProfile().getFullName());
