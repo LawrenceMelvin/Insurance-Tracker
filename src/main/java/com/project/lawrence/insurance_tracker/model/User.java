@@ -1,9 +1,6 @@
 package com.project.lawrence.insurance_tracker.model;
 
 import jakarta.persistence.*;
-import lombok.NonNull;
-import org.springframework.boot.autoconfigure.web.WebProperties;
-
 import java.time.LocalDate;
 
 @Entity

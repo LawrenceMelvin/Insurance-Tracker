@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/insurance")
 public class PolicyExplainerController {
 

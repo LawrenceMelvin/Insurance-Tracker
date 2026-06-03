@@ -1,6 +1,5 @@
 package com.project.lawrence.insurance_tracker.controller;
 
-import com.project.lawrence.insurance_tracker.service.EmailService;
 import com.project.lawrence.insurance_tracker.service.InsuranceReminderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class InsuranceReminderController {
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private InsuranceReminderService insuranceReminderService;

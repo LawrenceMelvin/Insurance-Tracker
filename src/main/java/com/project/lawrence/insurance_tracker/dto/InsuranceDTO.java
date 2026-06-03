@@ -1,7 +1,6 @@
 package com.project.lawrence.insurance_tracker.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class InsuranceDTO {
     private int insuranceId;

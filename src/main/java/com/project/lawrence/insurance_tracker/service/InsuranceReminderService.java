@@ -1,12 +1,10 @@
 package com.project.lawrence.insurance_tracker.service;
 
-import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.repository.Insurancerepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

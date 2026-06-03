@@ -126,6 +126,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-core -->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.ai</groupId>-->

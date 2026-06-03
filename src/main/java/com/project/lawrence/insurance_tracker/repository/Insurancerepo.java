@@ -1,6 +1,5 @@
 package com.project.lawrence.insurance_tracker.repository;
 
-import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.model.User;
 import com.project.lawrence.insurance_tracker.model.FamilyGroup;

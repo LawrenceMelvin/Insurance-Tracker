@@ -7,8 +7,6 @@ import com.project.lawrence.insurance_tracker.model.FamilyMemberProfile;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.repository.FamilyMemberProfileRepository;
 import com.project.lawrence.insurance_tracker.service.InsuranceService;
-import jakarta.servlet.http.HttpSession;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@CrossOrigin
 @RequestMapping("/insurance")
 public class InsuranceController {
 
@@ -110,10 +105,10 @@ public class InsuranceController {
         User user = userRepository.findByUserEmail(username).orElse(null);
         logger.info("User: {}", user);
         Insurance existingInsurance = service.getInsuranceById(insuranceId);
-        logger.info("Existing User: {}", existingInsurance.getUser().getUserEmail());
         if (existingInsurance == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance not found");
         }
+        logger.info("Existing User: {}", existingInsurance.getUser().getUserEmail());
 
         if (!existingInsurance.getUser().equals(user)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to update this insurance");

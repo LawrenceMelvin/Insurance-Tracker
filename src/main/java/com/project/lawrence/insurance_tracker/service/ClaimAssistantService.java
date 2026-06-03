@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
