@@ -7,6 +7,7 @@ import com.project.lawrence.insurance_tracker.model.FamilyMemberProfile;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
 import com.project.lawrence.insurance_tracker.repository.FamilyMemberProfileRepository;
 import com.project.lawrence.insurance_tracker.service.InsuranceService;
+import com.project.lawrence.insurance_tracker.service.InsuranceEstimationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class InsuranceController {
 
     @Autowired
     private FamilyMemberProfileRepository familyMemberProfileRepository;
+
+    @Autowired
+    private InsuranceEstimationService estimationService;
 
     @GetMapping("/{insuranceId}")
     public ResponseEntity<InsuranceDTO> getById(@PathVariable int insuranceId, Authentication authentication) {
@@ -147,5 +151,36 @@ public class InsuranceController {
         }
     }
 
+    @PostMapping("/{insuranceId}/estimate")
+    public ResponseEntity<?> calculateEstimate(
+            @PathVariable int insuranceId,
+            @RequestBody InsuranceEstimationService.EstimateRequest request,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
 
+        try {
+            String username = authentication.getName();
+            User user = userRepository.findByUserEmail(username).orElseThrow(() ->
+                    new IllegalArgumentException("User not found"));
+
+            Insurance insurance = service.getInsuranceById(insuranceId);
+            if (insurance == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance not found");
+            }
+
+            if (!insurance.getUser().equals(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this insurance policy");
+            }
+
+            InsuranceEstimationService.EstimateResponse response = estimationService.calculateEstimate(insurance, request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", e.getMessage(),
+                    "status", "error"
+            ));
+        }
+    }
 }
