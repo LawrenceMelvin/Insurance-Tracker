@@ -1,16 +1,12 @@
 package com.project.lawrence.insurance_tracker.security;
 
-import com.project.lawrence.insurance_tracker.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,12 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserService userService;
-
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
-    }
-
     @Value("${frontend.url}")
     private String frontendUrl;
 
@@ -37,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/auth/**", "/forgot-password/**","/schedule").permitAll()
+                        .requestMatchers("/h2-console/**", "/auth/**", "/forgot-password/**","/schedule","/favicon.ico", "/error").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/insurance/update/**").authenticated()
                         .anyRequest().authenticated()
                 )

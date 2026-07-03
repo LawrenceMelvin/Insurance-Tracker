@@ -10,6 +10,22 @@ public class ChatResponse {
     public static class Choice{
         private int index;
         private Message Message;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public Message getMessage() {
+            return Message;
+        }
+
+        public void setMessage(Message Message) {
+            this.Message = Message;
+        }
     }
 
     public List<Choice> getChoices() {

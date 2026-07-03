@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Component
 @Entity
@@ -28,9 +27,20 @@ public class Insurance {
     private LocalDate dateOfBirth;
 //    private byte[] insuranceDocument;
 
+    @Column(name = "policy_analysis_json", columnDefinition = "TEXT")
+    private String policyAnalysisJson;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    public String getPolicyAnalysisJson() {
+        return policyAnalysisJson;
+    }
+
+    public void setPolicyAnalysisJson(String policyAnalysisJson) {
+        this.policyAnalysisJson = policyAnalysisJson;
+    }
 
     public Insurance() {
 
@@ -106,6 +116,18 @@ public class Insurance {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="family_member_profile_id")
+    private FamilyMemberProfile familyMemberProfile;
+
+    public FamilyMemberProfile getFamilyMemberProfile() {
+        return familyMemberProfile;
+    }
+
+    public void setFamilyMemberProfile(FamilyMemberProfile familyMemberProfile) {
+        this.familyMemberProfile = familyMemberProfile;
     }
 
     @Override

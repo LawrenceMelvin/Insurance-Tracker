@@ -3,10 +3,11 @@ package com.project.lawrence.insurance_tracker.controller;
 import com.project.lawrence.insurance_tracker.dto.InsuranceDTO;
 import com.project.lawrence.insurance_tracker.model.Insurance;
 import com.project.lawrence.insurance_tracker.model.User;
+import com.project.lawrence.insurance_tracker.model.FamilyMemberProfile;
 import com.project.lawrence.insurance_tracker.repository.UserRepository;
+import com.project.lawrence.insurance_tracker.repository.FamilyMemberProfileRepository;
 import com.project.lawrence.insurance_tracker.service.InsuranceService;
-import jakarta.servlet.http.HttpSession;
-import org.slf4j.ILoggerFactory;
+import com.project.lawrence.insurance_tracker.service.InsuranceEstimationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@CrossOrigin
 @RequestMapping("/insurance")
 public class InsuranceController {
 
@@ -34,6 +32,12 @@ public class InsuranceController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FamilyMemberProfileRepository familyMemberProfileRepository;
+
+    @Autowired
+    private InsuranceEstimationService estimationService;
 
     @GetMapping("/{insuranceId}")
     public ResponseEntity<InsuranceDTO> getById(@PathVariable int insuranceId, Authentication authentication) {
@@ -76,6 +80,11 @@ public class InsuranceController {
             insurance.setInsuranceFromDate(request.getInsuranceFromDate());
             insurance.setInsuranceToDate(request.getInsuranceToDate());
             insurance.setDateOfBirth(request.getDateOfBirth());
+            insurance.setPolicyAnalysisJson(request.getPolicyAnalysisJson());
+            if (request.getFamilyMemberProfile() != null && request.getFamilyMemberProfile().getProfileId() != 0) {
+                FamilyMemberProfile profile = familyMemberProfileRepository.findById(request.getFamilyMemberProfile().getProfileId()).orElse(null);
+                insurance.setFamilyMemberProfile(profile);
+            }
             Insurance savedInsurance = service.addInsurance(insurance, username);
 
             return ResponseEntity.ok().body(Map.of(
@@ -100,10 +109,10 @@ public class InsuranceController {
         User user = userRepository.findByUserEmail(username).orElse(null);
         logger.info("User: {}", user);
         Insurance existingInsurance = service.getInsuranceById(insuranceId);
-        logger.info("Existing User: {}", existingInsurance.getUser().getUserEmail());
         if (existingInsurance == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance not found");
         }
+        logger.info("Existing User: {}", existingInsurance.getUser().getUserEmail());
 
         if (!existingInsurance.getUser().equals(user)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to update this insurance");
@@ -116,6 +125,13 @@ public class InsuranceController {
         existingInsurance.setInsuranceFromDate(insuranceDTO.getInsuranceFromDate());
         existingInsurance.setInsuranceToDate(insuranceDTO.getInsuranceToDate());
         existingInsurance.setDateOfBirth(insuranceDTO.getDateOfBirth());
+        existingInsurance.setPolicyAnalysisJson(insuranceDTO.getPolicyAnalysisJson());
+        if (insuranceDTO.getFamilyMemberProfileId() != null) {
+            FamilyMemberProfile profile = familyMemberProfileRepository.findById(insuranceDTO.getFamilyMemberProfileId()).orElse(null);
+            existingInsurance.setFamilyMemberProfile(profile);
+        } else {
+            existingInsurance.setFamilyMemberProfile(null);
+        }
         service.updateInsurance(existingInsurance);
 
         return ResponseEntity.ok("Insurance updated successfully");
@@ -135,5 +151,36 @@ public class InsuranceController {
         }
     }
 
+    @PostMapping("/{insuranceId}/estimate")
+    public ResponseEntity<?> calculateEstimate(
+            @PathVariable int insuranceId,
+            @RequestBody InsuranceEstimationService.EstimateRequest request,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
 
+        try {
+            String username = authentication.getName();
+            User user = userRepository.findByUserEmail(username).orElseThrow(() ->
+                    new IllegalArgumentException("User not found"));
+
+            Insurance insurance = service.getInsuranceById(insuranceId);
+            if (insurance == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance not found");
+            }
+
+            if (!insurance.getUser().equals(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this insurance policy");
+            }
+
+            InsuranceEstimationService.EstimateResponse response = estimationService.calculateEstimate(insurance, request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", e.getMessage(),
+                    "status", "error"
+            ));
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package com.project.lawrence.insurance_tracker.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

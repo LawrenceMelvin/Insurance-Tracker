@@ -1,7 +1,6 @@
 package com.project.lawrence.insurance_tracker.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class InsuranceDTO {
     private int insuranceId;
@@ -12,9 +11,17 @@ public class InsuranceDTO {
     private LocalDate insuranceFromDate;
     private LocalDate insuranceToDate;
     private LocalDate dateOfBirth;
+    private String policyAnalysisJson;
 
 
     // Getters and setters
+    public String getPolicyAnalysisJson() {
+        return policyAnalysisJson;
+    }
+
+    public void setPolicyAnalysisJson(String policyAnalysisJson) {
+        this.policyAnalysisJson = policyAnalysisJson;
+    }
     public int getInsuranceId() {
         return insuranceId;
     }
@@ -77,5 +84,24 @@ public class InsuranceDTO {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    private Integer familyMemberProfileId;
+    private String belongsToName;
+
+    public Integer getFamilyMemberProfileId() {
+        return familyMemberProfileId;
+    }
+
+    public void setFamilyMemberProfileId(Integer familyMemberProfileId) {
+        this.familyMemberProfileId = familyMemberProfileId;
+    }
+
+    public String getBelongsToName() {
+        return belongsToName;
+    }
+
+    public void setBelongsToName(String belongsToName) {
+        this.belongsToName = belongsToName;
     }
 }
